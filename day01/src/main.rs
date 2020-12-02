@@ -3,7 +3,7 @@ use itertools::Itertools;
 fn main() {
     let nums = std::fs::read_to_string("input.txt")
         .unwrap()
-        .split('\n')
+        .lines()
         .filter_map(|s| s.parse().ok())
         .collect::<Vec<_>>();
     for part in &[1, 2] {

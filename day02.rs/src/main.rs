@@ -1,6 +1,6 @@
 fn main() {
     let input = std::fs::read_to_string("input.txt").unwrap();
-    let lines = input.trim().lines().map(parse_line);
+    let lines = input.lines().map(parse_line);
     println!(
         "Part 1: {}",
         lines

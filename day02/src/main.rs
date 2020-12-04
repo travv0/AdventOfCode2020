@@ -91,7 +91,7 @@ fn test_password_valid_part2() {
 }
 
 fn parse_line(line: &str) -> (Policy, &str) {
-    let words = line.split(' ').collect::<Vec<_>>();
+    let words = line.split_ascii_whitespace().collect::<Vec<_>>();
     let min_max = words[0]
         .split('-')
         .map(|i| {

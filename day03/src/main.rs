@@ -1,6 +1,6 @@
 fn main() {
     let input = std::fs::read_to_string("input.txt").unwrap();
-    let grid = parse_input(&input);
+    let grid = parse_input(&input).unwrap_or_else(|| panic!("unable to parse input: {}", input));
     println!("Part 1: {}", grid.count_trees_on_path(3, 1));
 
     let slopes = &[(1, 1), (3, 1), (5, 1), (7, 1), (1, 2)];
@@ -19,10 +19,17 @@ enum Square {
     Tree,
 }
 
-struct Grid(Vec<Vec<Square>>);
+struct Grid {
+    squares: Vec<Vec<Square>>,
+    width: usize,
+}
 
-fn parse_input(input: &str) -> Grid {
-    Grid(input.lines().map(parse_line).collect())
+fn parse_input(input: &str) -> Option<Grid> {
+    let squares = input.lines().map(parse_line).collect::<Vec<Vec<_>>>();
+    squares.get(0).map(|row| row.len()).map(|len| Grid {
+        width: len,
+        squares,
+    })
 }
 
 fn parse_line(line: &str) -> Vec<Square> {
@@ -33,12 +40,8 @@ fn parse_line(line: &str) -> Vec<Square> {
 
 impl Grid {
     fn get_square(&self, x: usize, y: usize) -> Option<Square> {
-        let Grid(vec) = self;
-        if y < vec.len() {
-            Some(vec[y][x % vec[y].len()])
-        } else {
-            None
-        }
+        let Grid { squares, width } = self;
+        squares.get(y).map(|v| v[x % width])
     }
 
     fn count_trees_on_path(&self, dx: usize, dy: usize) -> usize {
@@ -68,7 +71,7 @@ fn test_get_square() {
 #.##...#...
 #...##....#
 .#..#...#.#";
-    let grid = parse_input(input);
+    let grid = parse_input(input).unwrap();
     assert_eq!(Some(Square::Open), grid.get_square(3, 1));
     assert_eq!(Some(Square::Tree), grid.get_square(6, 2));
     assert_eq!(Some(Square::Open), grid.get_square(9, 3));
@@ -89,6 +92,6 @@ fn test_count_trees_on_path() {
 #.##...#...
 #...##....#
 .#..#...#.#";
-    let grid = parse_input(input);
+    let grid = parse_input(input).unwrap();
     assert_eq!(7, grid.count_trees_on_path(3, 1));
 }

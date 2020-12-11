@@ -56,21 +56,12 @@ fn count_arrangements(joltage_ratings: &[usize]) -> usize {
             1
         } else if let Some(&result) = cache.get(&i) {
             result
+        } else if let None = joltage_ratings.get(&i) {
+            0
         } else {
-            let result =
-                0 + if let Some(_) = joltage_ratings.get(&(i + 1)) {
-                    count_arrangements(&joltage_ratings, i + 1, end, &mut cache)
-                } else {
-                    0
-                } + if let Some(_) = joltage_ratings.get(&(i + 2)) {
-                    count_arrangements(&joltage_ratings, i + 2, end, &mut cache)
-                } else {
-                    0
-                } + if let Some(_) = joltage_ratings.get(&(i + 3)) {
-                    count_arrangements(&joltage_ratings, i + 3, end, &mut cache)
-                } else {
-                    0
-                };
+            let result = count_arrangements(&joltage_ratings, i + 1, end, &mut cache)
+                + count_arrangements(&joltage_ratings, i + 2, end, &mut cache)
+                + count_arrangements(&joltage_ratings, i + 3, end, &mut cache);
             cache.insert(i, result);
             result
         }

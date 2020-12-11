@@ -16,12 +16,13 @@ fn input_to_seat_id(input: &str) -> Result<usize, String> {
 }
 
 fn partition(input: &str, left_char: char, right_char: char) -> Result<usize, String> {
-    let mut nums = (0..(2 as usize).pow(input.len() as u32)).collect::<Vec<_>>();
+    let max = 2usize.pow(input.len() as u32);
+    let mut nums = &(0..max).collect::<Vec<_>>()[..];
     for c in input.chars() {
         if c == left_char {
-            nums = nums.iter().copied().take(nums.len() / 2).collect();
+            nums = &nums[..nums.len() / 2];
         } else if c == right_char {
-            nums = nums.iter().copied().skip(nums.len() / 2).collect();
+            nums = &nums[nums.len() / 2..];
         } else {
             return Err(format!("invalid char in input: '{}'", c));
         }
